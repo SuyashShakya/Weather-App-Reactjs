@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../component/Card';
 import Welcome from '../container/Welcome/Welcome';
 import { Bar } from 'react-chartjs-2';
@@ -18,124 +18,107 @@ const noOfTime = (Object.keys(DayData[0]).length);
 
 
 
-class Weather extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            timePassed: false,
-            chartData: {},
-            id: '',
-            final_arr: [],
-            arr_: [],
-            radio: true
-        }
-        console.log(this.state.id)
-    }
-    UNSAFE_componentWillMount() {
+const Weather = () => {
+    const [timePassed, settimePassed] = useState(false);
+    const [chartData, setChartData] = useState({});
+    const [radio, setRadio] = useState(true);
+
+    useEffect(() => {
         setTimeout(() => {
-            this.setTimePassed();
+            setTimePassed();
         }, 2000);
+    },[]);
 
+    const setTimePassed = () => {
+        settimePassed(true);
+    }
+    const celciusHandler = () => {
+        setRadio(true)
+    }
+    const farenheitHandler = () => {
+        setRadio(false)
     }
 
-    setTimePassed = () => {
-        this.setState({ timePassed: true });
-    }
-    celciusHandler = () => {
-        this.setState({ radio: true })
-        console.log(this.state.radio)
-    }
-    farenheitHandler = () => {
-        this.setState({ radio: false })
-        console.log(this.state.radio)
-    }
-    render() {
-        if (!this.state.timePassed) {
-            return <Welcome />
-        } else {
-            return (
-                <div style={{ backgroundImage: `url(${back})` }}>
-                    <div className='container'>
-                        <center><h2>Weather Application</h2></center>
-                        <div>
+    if (!timePassed) {
+        return <Welcome />
+    } else {
+        return (
+            <div style={{ backgroundImage: `url(${back})` }}>
+                <div className='container'>
+                    <center><h2>Weather Application</h2></center>
+                    <div>
+                        <input
+                            type='radio'
+                            checked={radio}
+                            onChange={celciusHandler}
+                        />Celcius &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <input
-                                type='radio'
-                                checked={this.state.radio}
-                                onChange={this.celciusHandler}
-                            />Celcius &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input
-                                type='radio'
-                                checked={!this.state.radio}
-                                onChange={this.farenheitHandler}
-                            />Fahrenheit
+                            type='radio'
+                            checked={!radio}
+                            onChange={farenheitHandler}
+                        />Fahrenheit
                         </div>
-                        <br />
-                        {this.state.radio ?
-                            < div class="container">
-                                <div class="card-deck">
-                                    {DayData.map((weather, index) => {
-                                        return (
+                    <br />
+                    {radio ?
+                        < div class="container">
+                            <div class="card-deck">
+                                {DayData.map((weather, index) => {
+                                    return (
+                                        <Card
+                                            temp={((weather.Time0 + weather.Time2 + weather.Time4 + weather.Time6 + weather.Time8 + weather.Time10 + weather.Time12 + weather.Time14 + weather.Time16 + weather.Time18 + weather.Time20 + weather.Time22) / (noOfTime - 2)).toFixed(2) + ' Degree Celcius'}
+                                            date={weather.Date}
+                                            onClick={() => (setChartData({
+                                                labels: ['12 Am', '2 Am', '4 Am', '6 Am', '8 Am', '10 Am', '12 Pm', '2 Pm', '4 Pm', '6 Pm', '8 Pm', '10 Pm'],
+                                                datasets: [
+                                                    {
+                                                        label: 'Temperature',
+                                                        data: [weather.Time0, weather.Time2, weather.Time4, weather.Time6, weather.Time8, weather.Time10, weather.Time12, weather.Time14, weather.Time16, weather.Time18, weather.Time20, weather.Time22],
+                                                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                                                    }
+                                                ]
+                                            })
 
-                                            <Card
-                                                temp={((weather.Time0 + weather.Time2 + weather.Time4 + weather.Time6 + weather.Time8 + weather.Time10 + weather.Time12 + weather.Time14 + weather.Time16 + weather.Time18 + weather.Time20 + weather.Time22) / (noOfTime - 2)).toFixed(2) + ' Degree Celcius'}
-                                                date={weather.Date}
-                                                onClick={() => {
-                                                    console.log([weather.Time0, weather.Time2, weather.Time4, weather.Time6, weather.Time8, weather.Time10])
-                                                    this.setState({
-                                                        chartData: {
-                                                            labels: ['12 Am', '2 Am', '4 Am', '6 Am', '8 Am', '10 Am', '12 Pm', '2 Pm', '4 Pm', '6 Pm', '8 Pm', '10 Pm'],
-                                                            datasets: [
-                                                                {
-                                                                    label: 'Temperature',
-                                                                    data: [weather.Time0, weather.Time2, weather.Time4, weather.Time6, weather.Time8, weather.Time10, weather.Time12, weather.Time14, weather.Time16, weather.Time18, weather.Time20, weather.Time22],
-                                                                    backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                                                                }
-                                                            ]
-                                                        }
-                                                    });
-                                                }} />
-                                        )
-                                    })}
-                                </div>
+                                            )} />
+                                    )
+                                })}
                             </div>
-                            : < div class="container">
-                                <div class="card-deck">
-                                    {DayData.map(weather => {
-                                        return (
-                                            <Card
-                                                temp={(((weather.Time0 + weather.Time2 + weather.Time4 + weather.Time6 + weather.Time8 + weather.Time10 + weather.Time12 + weather.Time14 + weather.Time16 + weather.Time18 + weather.Time20 + weather.Time22) / (noOfTime - 2)) * (9 / 5) + 32).toFixed(2) + ' Degree Farenheit'}
-                                                date={weather.Date}
-                                                onClick={() => {
-                                                    console.log([weather.Time0, weather.Time2, weather.Time4, weather.Time6, weather.Time8, weather.Time10])
-                                                    this.setState({
-                                                        chartData: {
-                                                            labels: ['12 Am', '2 Am', '4 Am', '6 Am', '8 Am', '10 Am', '12 Pm', '2 Pm', '4 Pm', '6 Pm', '8 Pm', '10 Pm'],
-                                                            datasets: [
-                                                                {
-                                                                    label: 'Temperature',
-                                                                    data: [(weather.Time0 * (9 / 5) + 32).toFixed(2), (weather.Time2 * (9 / 5) + 32).toFixed(2), (weather.Time4 * (9 / 5) + 32).toFixed(2), (weather.Time6 * (9 / 5) + 32).toFixed(2), (weather.Time8 * (9 / 5) + 32).toFixed(2), (weather.Time10 * (9 / 5) + 32).toFixed(2), (weather.Time12 * (9 / 5) + 32).toFixed(2), (weather.Time14 * (9 / 5) + 32).toFixed(2), (weather.Time16 * (9 / 5) + 32).toFixed(2), (weather.Time18 * (9 / 5) + 32).toFixed(2), (weather.Time20 * (9 / 5) + 32).toFixed(2), (weather.Time22 * (9 / 5) + 32).toFixed(2)],
-                                                                    backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                                                                }
-                                                            ]
-                                                        }
-                                                    });
-                                                }} />)
-                                    })}
-                                </div>
-                            </div>}
-                        <div className="chart">
-                            <br />
-                                <center> <h2>BarGraph of Temperature of Kathmandu in {this.state.radio?'Celcius':'Fahrenheit'}</h2></center>
-                            <br />
-                            <Bar
-                                data={this.state.chartData}
-                            />
                         </div>
+                        : < div class="container">
+                            <div class="card-deck">
+                                {DayData.map(weather => {
+                                    return (
+                                        <Card
+                                            temp={(((weather.Time0 + weather.Time2 + weather.Time4 + weather.Time6 + weather.Time8 + weather.Time10 + weather.Time12 + weather.Time14 + weather.Time16 + weather.Time18 + weather.Time20 + weather.Time22) / (noOfTime - 2)) * (9 / 5) + 32).toFixed(2) + ' Degree Fahrenheit'}
+                                            date={weather.Date}
+                                            onClick={() => (
+                                                setChartData({
+                                                    labels: ['12 Am', '2 Am', '4 Am', '6 Am', '8 Am', '10 Am', '12 Pm', '2 Pm', '4 Pm', '6 Pm', '8 Pm', '10 Pm'],
+                                                    datasets: [
+                                                        {
+                                                            label: 'Temperature',
+                                                            data: [(weather.Time0 * (9 / 5) + 32).toFixed(2), (weather.Time2 * (9 / 5) + 32).toFixed(2), (weather.Time4 * (9 / 5) + 32).toFixed(2), (weather.Time6 * (9 / 5) + 32).toFixed(2), (weather.Time8 * (9 / 5) + 32).toFixed(2), (weather.Time10 * (9 / 5) + 32).toFixed(2), (weather.Time12 * (9 / 5) + 32).toFixed(2), (weather.Time14 * (9 / 5) + 32).toFixed(2), (weather.Time16 * (9 / 5) + 32).toFixed(2), (weather.Time18 * (9 / 5) + 32).toFixed(2), (weather.Time20 * (9 / 5) + 32).toFixed(2), (weather.Time22 * (9 / 5) + 32).toFixed(2)],
+                                                            backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                                                        }
+                                                    ]
+                                                })
+
+                                            )} />)
+                                })}
+                            </div>
+                        </div>}
+                    <div className="chart">
+                        <br />
+                        <center> <h2>BarGraph of Temperature of Kathmandu in {radio ? 'Celcius' : 'Fahrenheit'}</h2></center>
+                        <br />
+                        <Bar
+                            data={chartData}
+                        />
                     </div>
                 </div>
-            )
+            </div>
+        )
 
-        }
+
     }
 }
 export default Weather;
