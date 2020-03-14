@@ -4,19 +4,6 @@ import Welcome from '../container/Welcome/Welcome';
 import { Bar } from 'react-chartjs-2';
 import back from '../assets/back.jpg';
 
-
-// const DayData = [
-//     { id: 1, Date: '1 March 2020', Time0: 15, Time2: 16, Time4: 17, Time6: 18, Time8: 20, Time10: 22, Time12: 25, Time14: 26, Time16: 23, Time18: 22, Time20: 19, Time22: 18 },
-//     { id: 2, Date: '5 March 2020', Time0: 16, Time2: 18, Time4: 19, Time6: 20, Time8: 21, Time10: 24, Time12: 27, Time14: 28, Time16: 24, Time18: 23, Time20: 22, Time22: 20 },
-//     { id: 3, Date: '10 March 2020', Time0: 18, Time2: 20, Time4: 22, Time6: 24, Time8: 26, Time10: 28, Time12: 30, Time14: 32, Time16: 28, Time18: 27, Time20: 26, Time22: 23 },
-//     { id: 4, Date: '15 March 2020', Time0: 18, Time2: 20, Time4: 21, Time6: 22, Time8: 24, Time10: 25, Time12: 30, Time14: 34, Time16: 32, Time18: 28, Time20: 24, Time22: 20 },
-//     { id: 5, Date: '20 March 2020', Time0: 20, Time2: 21, Time4: 22, Time6: 23, Time8: 24, Time10: 28, Time12: 32, Time14: 34, Time16: 30, Time18: 28, Time20: 25, Time22: 23 },
-// ]
-
-// const noOfTime = (Object.keys(DayData[0]).length);
-
-
-
 const Weather = () => {
     const [timePassed, settimePassed] = useState(false);
     const [chartData1, setChartData1] = useState({});
@@ -25,16 +12,18 @@ const Weather = () => {
     const [isLoaded, setIsLoaded] = useState(true);
     const [items, setItems] = useState();
     const [final_arr, setFinal_arr] = useState(null);
-    const [ind, setind] = useState(6);
+    const [search, setSearch] = useState('Kathmandu');
+    const [submit, setSubmit] = useState('Kathmandu')
+
     useEffect(() => {
         setTimeout(() => {
             Passed();
         }, 2000);
         apiCalls();
-    }, [radio]);
+    }, [radio, search, submit]);
 
     const apiCalls = () => {
-        fetch("http://api.openweathermap.org/data/2.5/forecast?q=Kathmandu&APPID=920e416e06ad3a34c0ec275b1e96bc49")
+        fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${submit}&APPID=920e416e06ad3a34c0ec275b1e96bc49`)
             .then(res => res.json())
             .then((data) => {
 
@@ -82,15 +71,7 @@ const Weather = () => {
                         output.push(temp);
                     }
                 });
-
-                // const final_arr=[];
-                // for(var i=0;i<result.length;i++){
-                //     final_arr.push(result[i])
-                // }
-                // final_arr.splice(1, result.length - 1);
-                // console.log(result.splice(1, result.length - 1));
                 setFinal_arr(output);
-                // setFinal_arr(result)
                 setIsLoaded(false)
             })
             .catch(err => {
@@ -109,6 +90,13 @@ const Weather = () => {
         setRadio(false)
         apiCalls()
     }
+    const textHandler = (value) => {
+        setSearch(value);
+    }
+
+    const buttonHandler = () => {
+        setSubmit(search)
+    }
 
     if (isLoaded) {
         return <Welcome />
@@ -117,6 +105,15 @@ const Weather = () => {
             <div style={{ backgroundImage: `url(${back})` }}>
                 <div className='container'>
                     <center><h2>Weather Application</h2></center>
+                    Enter a City Name:<br />
+                    <input
+                        type='text'
+                        value={search}
+                        onChange={e => textHandler(e.target.value)}
+                    />
+                    <button type="submit" onClick={buttonHandler} >Submit</button>
+                    <br/>
+                    <br/>
                     <div>
                         <input
                             type='radio'
