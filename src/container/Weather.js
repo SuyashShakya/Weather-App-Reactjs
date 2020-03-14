@@ -173,7 +173,7 @@ const Weather = () => {
 
                     <div className="chart">
                         <br />
-                        <center> <h2>BarGraph of Maximum Temperature of Kathmandu in {radio ? 'Celcius' : 'Fahrenheit'}</h2></center>
+                        <center> <h2>BarGraph of Maximum Temperature of {submit} in {radio ? 'Celcius' : 'Fahrenheit'}</h2></center>
                         <br />
                         <Bar
                             data={chartData1}
@@ -181,7 +181,7 @@ const Weather = () => {
                     </div>
                     <div className="chart">
                         <br />
-                        <center> <h2>BarGraph of Minimum Temperature of Kathmandu in {radio ? 'Celcius' : 'Fahrenheit'}</h2></center>
+                        <center> <h2>BarGraph of Minimum Temperature of {submit} in {radio ? 'Celcius' : 'Fahrenheit'}</h2></center>
                         <br />
                         <Bar
                             data={chartData2}
