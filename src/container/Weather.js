@@ -5,20 +5,15 @@ import { Bar } from 'react-chartjs-2';
 import back from '../assets/back.jpg';
 
 const Weather = () => {
-    const [timePassed, settimePassed] = useState(false);
     const [chartData1, setChartData1] = useState({});
     const [chartData2, setChartData2] = useState({});
     const [radio, setRadio] = useState(true);
     const [isLoaded, setIsLoaded] = useState(true);
-    const [items, setItems] = useState();
     const [final_arr, setFinal_arr] = useState(null);
     const [search, setSearch] = useState('Kathmandu');
     const [submit, setSubmit] = useState('Kathmandu')
 
     useEffect(() => {
-        setTimeout(() => {
-            Passed();
-        }, 2000);
         apiCalls();
     }, [radio, search, submit]);
 
@@ -26,8 +21,6 @@ const Weather = () => {
         fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${submit}&APPID=920e416e06ad3a34c0ec275b1e96bc49`)
             .then(res => res.json())
             .then((data) => {
-
-                setItems(data.items)
                 console.log(radio)
                 const new_array = [];
                 for (var i = 0; i < data.list.length; i++) {
@@ -77,10 +70,6 @@ const Weather = () => {
             .catch(err => {
                 setIsLoaded(false)
             })
-    }
-
-    const Passed = () => {
-        settimePassed(true);
     }
     const celciusHandler = () => {
         setRadio(true)
@@ -141,9 +130,9 @@ const Weather = () => {
                                 }
                                 return (
                                     <Card
-                                        temp1={`${parseFloat(max_sum / item.Max_Temp.length).toFixed(3)} ${radio ? 'Celcius' : 'Fahrenheit'}`}
+                                        temp1={`${parseFloat(max_sum / item.Max_Temp.length).toFixed(3)} ${radio ? 'Degree Celcius' : 'Degree Fahrenheit'}`}
                                         date={item.Date}
-                                        temp2={`${parseFloat(min_sum / item.Min_temp.length).toFixed(3)} ${radio ? 'Celcius' : 'Fahrenheit'}`}
+                                        temp2={`${parseFloat(min_sum / item.Min_temp.length).toFixed(3)} ${radio ? 'Degree Celcius' : 'Degree Fahrenheit'}`}
                                         onClick={() => (setChartData1({
                                             labels: item.Time,
                                             datasets: [
