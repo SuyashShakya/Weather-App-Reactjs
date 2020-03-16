@@ -21,7 +21,6 @@ const Weather = () => {
         fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${submit}&APPID=920e416e06ad3a34c0ec275b1e96bc49`)
             .then(res => res.json())
             .then((data) => {
-                console.log(radio)
                 const new_array = [];
                 for (var i = 0; i < data.list.length; i++) {
                     new_array.push({ 'Date': data.list[i].dt_txt.split(' ')[0], 'Time': data.list[i].dt_txt.split(' ')[1], 'Max_Temp': data.list[i].main.temp_max, 'Min_Temp': data.list[i].main.temp_min })
